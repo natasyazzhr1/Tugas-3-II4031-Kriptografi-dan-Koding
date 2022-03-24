@@ -112,6 +112,12 @@ def initialize():
     print("d =", d)
     
     return(n, e, d)
+
+def export(text, key, n):
+    ciphertext = to_hex(process(text, key, n))
+    txt = open('ciphertext.txt', 'w')
+    ciphertext = txt.write(ciphertext)
+    txt.close()
     
 properties = initialize()
 n = properties[0]
@@ -128,6 +134,8 @@ print('encrypt =', encrypt)
 ciphertext = to_hex(encrypt)
 print('ciphertext =', ciphertext)
 
+export(plaintext_number, e, n)
+
 decrypt = process(encrypt, d, n)
 print('decrypt =', decrypt)
 
@@ -138,5 +146,4 @@ print('plaintext =', plaintext)
 # printtime = timelater - timenow
 
 # print(printtime)
-
 
