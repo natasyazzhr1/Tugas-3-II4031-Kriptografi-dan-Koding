@@ -73,40 +73,24 @@ class File_Encrypt(QMainWindow):
     def __init__(self):
         super(File_Encrypt, self).__init__()
         loadUi("file.ui", self)
-    #     self.pushButton_7.clicked.connect(self.File)
-    #     self.pushButton_6.clicked.connect(self.Menu)
-    #     self.pushButton_5.clicked.connect(self.Decrypt)
-    #     self.pushButton_3.clicked.connect(self.Import)
-    #     self.pushButton_4.clicked.connect(self.Export)
 
-    # def Menu(self):
-    #     menu = Menu()
-    #     widget.addWidget(menu)
-    #     widget.setCurrentIndex(widget.currentIndex() + 1)
+    def Menu(self):
+        menu = Menu()
+        widget.addWidget(menu)
+        widget.setCurrentIndex(widget.currentIndex() + 1)
 
-    # def Decrypt(self):
-    #     plaintext = self.textEdit.toPlainText()
-    #     key = self.textEdit_2.toPlainText()
-    #     res = rc4_Process(plaintext, key)
-    #     print(res)
-    #     self.textBrowser.setText(res)
+    def Compute(self):
+        global data
+        plaintext = self.textEdit.toPlainText()
 
-    # def File(self):
-    #     filename = self.textEdit.toPlainText()
-    #     key = self.textEdit_2.toPlainText()
-    #     res = rc4_file(filename, key)
-    #     print(res)
-    #     self.textBrowser.setText(res)
+        encrypted = process(plaintext, data[1], data[0])
+        self.textBrowser.setText(to_hex(encrypted))
 
-    # def Import(self):
-    #     with open('plaintext.txt', 'r') as file:
-    #         lines = file.read().rstrip()
-    #     self.textEdit.setPlainText(str(lines))
+        ciphertext = self.textBrowser.toPlainText()
+        export(ciphertext)
 
-    # def Export(self):
-    #     plaintext = self.textEdit.toPlainText()
-    #     key = self.textEdit_2.toPlainText()
-    #     return(rc4_Export(plaintext, key))
+        # decrypted = process(plaintext, data[2], data[0])
+        # self.textBrowser_2.setText(to_hex(decrypted))
 
 
 # main
