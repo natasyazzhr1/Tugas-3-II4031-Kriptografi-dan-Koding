@@ -24,7 +24,7 @@ def is_prime(num):
 def prime_generator():
     notprime = True
     while notprime:
-        num = randrange(getrandbits(8))
+        num = randrange(2, getrandbits(8))
         if is_prime(num):
             return num
 
@@ -32,7 +32,7 @@ def prime_generator():
 def publickey_generator(phi):
     notfound = True
     while notfound:
-        e = randrange(getrandbits(8))
+        e = randrange(2, getrandbits(8))
         res = gcd(e, phi)
         if res == 1:
             return e
@@ -70,69 +70,73 @@ def filter(plaintext):
     return(clean.lower())
 
 
-def to_ascii(text):
+def to_ascii(list):
     result = []
-    for letter in text:
+    for letter in list:
         result.append(ord(letter) - ord('a'))
     return result
 
-def to_string(text):
+def to_string(list):
     result = []
-    for number in text:
+    for number in list:
         result.append(chr(number + ord('a')))
     return ''.join(result)
 
 
-# def divide_chunks(list):
-#     result = []
-#     for i in range(0, len(list), 2):
-#         result.append(list[i: i+2])
-#     return result
+def to_hex(list):
+    result = []
+    for number in list:
+        result.append(hex(number) + ' ')
+    return ''.join(result)
 
 
-def encrypt (text, e, n):
-    ciphertext = []
+def process (text, key, n):
+    result = []
     for number in text:
-        c = (number ** e) % n
-        ciphertext.append(c)
-    return ciphertext
-
-def decrypt (text, d, n):
-    plaintext = []
-    for number in text:
-        m = (number ** d) % n
-        plaintext.append(m)
-    return plaintext
-
+        result.append((number ** key) % n)
+    return result 
+ 
+def initialize():
+    p = prime_generator()
+    q = prime_generator()
+    n = p * q
+    phi = (p-1) * (q-1)
+    e = publickey_generator(phi)
+    d = privatekey_generator(e, phi)
     
-p = prime_generator()
-q = prime_generator()
-n = p * q
-phi = (p-1) * (q-1)
-e = publickey_generator(phi)
-d = privatekey_generator(e, phi)
+    print("p =", p)
+    print("q =", q)
+    print("n =", n)
+    print("phi =", phi)
+    print("e =", e)
+    print("d =", d)
+    
+    return(n, e, d)
+    
+properties = initialize()
+n = properties[0]
+e = properties[1]
+d = properties[2]
 
 plaintext = input("Enter your plaintext: ")
 plaintext_number = to_ascii(filter(plaintext))
-print('plaintext_number =', plaintext_number)
+# print('plaintext_number =', plaintext_number)
 
-print("p =", p)
-print("q =", q)
-print("n =", n)
-print("phi =", phi)
-print("e =", e)
-print("d =", d)
+encrypt = process(plaintext_number, e, n)
+print('encrypt =', encrypt)
 
-encrypted = encrypt(plaintext_number, e, n)
-print('encrypted =', encrypted)
-
-decrypted = decrypt(encrypted, d, n)
-print('decrypted =', decrypted)
-
-ciphertext = to_string(decrypted)
+ciphertext = to_hex(encrypt)
 print('ciphertext =', ciphertext)
+
+decrypt = process(encrypt, d, n)
+print('decrypt =', decrypt)
+
+plaintext = to_string(decrypt)
+print('plaintext =', plaintext)
 
 # timelater = time.time()
 # printtime = timelater - timenow
 
 # print(printtime)
+
+
