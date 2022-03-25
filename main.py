@@ -5,12 +5,10 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtGui import QPixmap
 
 
-from rsa import initialize, process, to_hex, export
+from rsa import initialize, process, to_hex, export, to_ascii, to_string, clean
 
-import sqlite3
 import os
-import csv
-import datetime
+import time
 
 
 class Menu(QMainWindow):
@@ -46,9 +44,6 @@ class Text_Encrypt(QMainWindow):
         loadUi("text.ui", self)
         self.pushButton.clicked.connect(self.Menu)
         self.pushButton_2.clicked.connect(self.Compute)
-    #     self.pushButton_5.clicked.connect(self.Encrypt)
-    #     self.pushButton_3.clicked.connect(self.Import)
-    #     self.pushButton_4.clicked.connect(self.Export)
 
     def Menu(self):
         menu = Menu()
@@ -56,41 +51,75 @@ class Text_Encrypt(QMainWindow):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def Compute(self):
+        # timenow = time.time()
+
         global data
         plaintext = self.textEdit.toPlainText()
 
-        encrypted = process(plaintext, data[1], data[0])
+        print(to_ascii(clean(plaintext)))
+
+        encrypted = process(to_ascii(clean(plaintext)), data[1], data[0])
         self.textBrowser.setText(to_hex(encrypted))
+
+        print(encrypted)
 
         ciphertext = self.textBrowser.toPlainText()
         export(ciphertext)
 
-        decrypted = process(plaintext, data[2], data[0])
-        self.textBrowser_2.setText(to_hex(decrypted))
+        decrypted = process(encrypted, data[2], data[0])
+        print(decrypted)
+
+        self.textBrowser_2.setText(to_string(decrypted))
+
+        # timelater = time.time()
+        # self.label_3.setText(timelater-timenow)
 
 
 class File_Encrypt(QMainWindow):
     def __init__(self):
         super(File_Encrypt, self).__init__()
         loadUi("file.ui", self)
+        self.pushButton.clicked.connect(self.Menu)
+        self.pushButton_2.clicked.connect(self.Browse)
+        self.pushButton_3.clicked.connect(self.Compute)
 
     def Menu(self):
         menu = Menu()
         widget.addWidget(menu)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
+    def Browse(self):
+        browser = QFileDialog.getOpenFileName(
+            self, "Open File", "", "All Files (*)")
+        if browser:
+            self.textBrowser.setText(browser[0])
+
     def Compute(self):
+        timenow = time.time()
+
         global data
-        plaintext = self.textEdit.toPlainText()
+        directory = self.textBrowser.toPlainText()
+
+        lines = open(directory, 'rb')
+        plaintext = bytearray(lines.read())
+        lines.close()
 
         encrypted = process(plaintext, data[1], data[0])
-        self.textBrowser.setText(to_hex(encrypted))
+        self.textBrowser_2.setText(to_hex(encrypted))
 
-        ciphertext = self.textBrowser.toPlainText()
+        ciphertext = self.textBrowser_2.toPlainText()
         export(ciphertext)
 
-        # decrypted = process(plaintext, data[2], data[0])
-        # self.textBrowser_2.setText(to_hex(decrypted))
+        decrypted = process(plaintext, data[2], data[0])
+
+        lines = open(directory, 'wb')
+        lines.write(bytearray(decrypted))
+        lines.close()
+
+        self.label_7.setText("Please check your files!")
+
+        timelater = time.time()
+        self.label_3.setText(timelater-timenow)
 
 
 # main

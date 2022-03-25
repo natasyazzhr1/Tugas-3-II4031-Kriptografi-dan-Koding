@@ -26,7 +26,7 @@ def is_prime(num):
 def prime_generator():
     notprime = True
     while notprime:
-        num = randrange(0, getrandbits(32))
+        num = randrange(0, getrandbits(8))
         if is_prime(num):
             return num
 
@@ -65,7 +65,7 @@ def privatekey_generator(pub, phi):
         return pri+phi
 
 
-def filter(plaintext):
+def clean(plaintext):
     clean = ''.join(i for i in plaintext if i.isalnum())
     clean = ''.join(
         i for i in clean if not i.isdigit())
@@ -94,10 +94,10 @@ def to_hex(list):
 
 
 def process(text, key, n):
-    list = to_ascii(text)
+    # list = to_ascii(text)
 
     result = []
-    for number in list:
+    for number in text:
         result.append((number**key) % n)
     return result
 
@@ -140,8 +140,7 @@ def export(text):
 # d = properties[2]
 
 # plaintext = input("Enter your plaintext: ")
-# plaintext_number = to_ascii(filter(plaintext))
-# # print('plaintext_number =', plaintext_number)
+# plaintext_number = to_ascii(clean(plaintext))
 
 # encrypt = process(plaintext_number, e, n)
 # print('encrypt =', encrypt)
@@ -149,7 +148,7 @@ def export(text):
 # ciphertext = to_hex(encrypt)
 # print('ciphertext =', ciphertext)
 
-# export(plaintext_number, e, n)
+# # export(plaintext_number, e, n)
 
 # decrypt = process(encrypt, d, n)
 # print('decrypt =', decrypt)

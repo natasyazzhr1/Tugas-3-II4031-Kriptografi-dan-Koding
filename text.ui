@@ -189,7 +189,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>100</x>
-      <y>260</y>
+      <y>250</y>
       <width>121</width>
       <height>40</height>
      </rect>
@@ -206,8 +206,8 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>260</y>
+      <x>310</x>
+      <y>250</y>
       <width>101</width>
       <height>40</height>
      </rect>
@@ -218,7 +218,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="text">
-     <string>HH:MM:SS</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
@@ -242,7 +242,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>310</x>
       <y>300</y>
       <width>101</width>
       <height>40</height>
@@ -254,7 +254,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="text">
-     <string>xxKb</string>
+     <string/>
     </property>
    </widget>
   </widget>
