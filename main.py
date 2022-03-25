@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtGui import QPixmap
 
 
-from rsa import initialize, process, to_hex, export, to_ascii, to_string, clean
+from rsa import initialize, process, to_hex, export, to_ascii, to_string, clean, get_size
 
 import os
 import time
@@ -51,28 +51,26 @@ class Text_Encrypt(QMainWindow):
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def Compute(self):
-        # timenow = time.time()
+        timenow = time.time()
 
         global data
         plaintext = self.textEdit.toPlainText()
 
-        print(to_ascii(clean(plaintext)))
-
         encrypted = process(to_ascii(clean(plaintext)), data[1], data[0])
         self.textBrowser.setText(to_hex(encrypted))
-
-        print(encrypted)
 
         ciphertext = self.textBrowser.toPlainText()
         export(ciphertext)
 
         decrypted = process(encrypted, data[2], data[0])
-        print(decrypted)
-
         self.textBrowser_2.setText(to_string(decrypted))
 
-        # timelater = time.time()
-        # self.label_3.setText(timelater-timenow)
+        size = 'Size of file is ' + get_size() + ' bytes'
+        self.label_6.setText(size)
+
+        timelater = time.time()
+        duration = str(timelater-timenow) + 's'
+        self.label_4.setText(duration)
 
 
 class File_Encrypt(QMainWindow):
@@ -111,15 +109,20 @@ class File_Encrypt(QMainWindow):
         export(ciphertext)
 
         decrypted = process(plaintext, data[2], data[0])
+        self.textBrowser_2.setText(to_string(decrypted))
 
         lines = open(directory, 'wb')
-        lines.write(bytearray(decrypted))
+        lines.write(bytearray(self.textBrowser_2.toPlainText()))
         lines.close()
 
-        self.label_7.setText("Please check your files!")
+        self.label_8.setText("Please check your files!")
+
+        size = 'Size of file is ' + get_size() + ' bytes'
+        self.label_6.setText(size)
 
         timelater = time.time()
-        self.label_3.setText(timelater-timenow)
+        duration = str(timelater-timenow) + 's'
+        self.label_4.setText(duration)
 
 
 # main

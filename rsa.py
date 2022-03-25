@@ -4,12 +4,13 @@ from math import gcd
 import os
 import time
 
-# # get the size of file
-# size = os.path.getsize(
-#     'D:/Kuliah/Semester 6/Kripto/Tugas-3-II4031-Kriptografi-dan-Koding/chipertext.txt')
-# print('Size of file is', size, 'bytes')
-
 # timenow = time.time()
+
+
+def get_size():
+    size = os.path.getsize(
+        'D:/Kuliah/Semester 6/Kripto/Tugas-3-II4031-Kriptografi-dan-Koding/ciphertext.txt')
+    return str(size)
 
 
 def is_prime(num):
@@ -26,7 +27,7 @@ def is_prime(num):
 def prime_generator():
     notprime = True
     while notprime:
-        num = randrange(0, getrandbits(8))
+        num = randrange(0, getrandbits(16))
         if is_prime(num):
             return num
 
@@ -134,7 +135,7 @@ def export(text):
     txt.close()
 
 
-# properties = initialize()
+# properties = initialize(17, 17)
 # n = properties[0]
 # e = properties[1]
 # d = properties[2]
