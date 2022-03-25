@@ -4,8 +4,6 @@ from math import gcd
 import os
 import time
 
-# timenow = time.time()
-
 
 def get_size():
     size = os.path.getsize(
@@ -13,57 +11,40 @@ def get_size():
     return str(size)
 
 
-def is_prime(num):
-    if num == 2:
-        return True
-    if num < 2 or num % 2 == 0:
-        return False
-    for n in range(3, int(num**0.5)+2, 2):
-        if num % n == 0:
-            return False
-    return True
+# def is_prime(num):
+#     if num == 2:
+#         return True
+#     if num < 2 or num % 2 == 0:
+#         return False
+#     for n in range(3, int(num**0.5)+2, 2):
+#         if num % n == 0:
+#             return False
+#     return True
 
 
-def prime_generator():
-    notprime = True
-    while notprime:
-        num = randrange(0, getrandbits(16))
-        if is_prime(num):
-            return num
+# def prime_generator():
+#     notprime = True
+#     while notprime:
+#         num = randrange(0, getrandbits(32))
+#         if is_prime(num):
+#             return num
 
 
 def publickey_generator(phi):
     notfound = True
     while notfound:
-        e = randrange(0, getrandbits(16))
+        e = randrange(0, getrandbits(32))
         res = gcd(e, phi)
         if res == 1:
             return e
 
 
-def privatekey_generator(pub, phi):
-    pri = 0
-    x1 = 0
-    x2 = 1
-    y1 = 1
-    temp_phi = phi
-
-    while pub > 0:
-        temp1 = temp_phi//pub
-        temp2 = temp_phi-temp1*pub
-        temp_phi = pub
-        pub = temp2
-
-        x = x2-temp1*x1
-        y = pri-temp1*y1
-
-        x2 = x1
-        x1 = x
-        pri = y1
-        y1 = y
-
-    if temp_phi == 1:
-        return pri+phi
+def privatekey_generator(e, phi):
+    if e == 0:
+        return (0, 1)
+    else:
+        y, x = privatekey_generator(phi % e, e)
+        return (x - (phi // e) * y, y)
 
 
 def clean(plaintext):
@@ -111,12 +92,16 @@ def initialize(p, q):
     e = publickey_generator(phi)
     d = privatekey_generator(e, phi)
 
-    print("p =", p)
-    print("q =", q)
-    print("n =", n)
-    print("phi =", phi)
-    print("e =", e)
-    print("d =", d)
+    d = d[0] % phi
+    if(d < 0):
+        d += phi
+
+    # print("p =", p)
+    # print("q =", q)
+    # print("n =", n)
+    # print("phi =", phi)
+    # print("e =", e)
+    # print("d =", d)
 
     txtprivate = open('private.pri', 'w')
     txtprivate.write(str(d))
@@ -135,7 +120,8 @@ def export(text):
     txt.close()
 
 
-# properties = initialize(17, 17)
+# properties = initialize(13, 17)
+# print(properties)
 # n = properties[0]
 # e = properties[1]
 # d = properties[2]
@@ -149,15 +135,8 @@ def export(text):
 # ciphertext = to_hex(encrypt)
 # print('ciphertext =', ciphertext)
 
-# # export(plaintext_number, e, n)
-
 # decrypt = process(encrypt, d, n)
 # print('decrypt =', decrypt)
 
 # plaintext = to_string(decrypt)
 # print('plaintext =', plaintext)
-
-# timelater = time.time()
-# printtime = timelater - timenow
-
-# print(printtime)

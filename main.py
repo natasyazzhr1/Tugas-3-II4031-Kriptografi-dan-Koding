@@ -56,15 +56,19 @@ class Text_Encrypt(QMainWindow):
         global data
         plaintext = self.textEdit.toPlainText()
 
+        # Encryption
         encrypted = process(to_ascii(clean(plaintext)), data[1], data[0])
         self.textBrowser.setText(to_hex(encrypted))
 
+        # Export
         ciphertext = self.textBrowser.toPlainText()
         export(ciphertext)
 
+        # Decryption
         decrypted = process(encrypted, data[2], data[0])
         self.textBrowser_2.setText(to_string(decrypted))
 
+        # Status
         size = 'Size of file is ' + get_size() + ' bytes'
         self.label_6.setText(size)
 
@@ -90,14 +94,16 @@ class File_Encrypt(QMainWindow):
         browser = QFileDialog.getOpenFileName(
             self, "Open File", "", "All Files (*)")
         if browser:
-            self.textBrowser.setText(browser[0])
+            self.textBrowser.setText(os.path.basename(browser[0]))
 
     def Compute(self):
         timenow = time.time()
 
         global data
-        directory = self.textBrowser.toPlainText()
+        directory = os.path.basename(self.textBrowser.toPlainText())
+        print(directory)
 
+        # Encryption
         lines = open(directory, 'rb')
         plaintext = bytearray(lines.read())
         lines.close()
@@ -105,18 +111,28 @@ class File_Encrypt(QMainWindow):
         encrypted = process(plaintext, data[1], data[0])
         self.textBrowser_2.setText(to_hex(encrypted))
 
+        lines = open(directory, 'wb')
+        lines.write(bytearray(encrypted))
+        lines.close()
+
+        # Export
         ciphertext = self.textBrowser_2.toPlainText()
         export(ciphertext)
 
+        # Decryption
+        lines = open(directory, 'rb')
+        plaintext = bytearray(lines.read())
+        lines.close()
+
         decrypted = process(plaintext, data[2], data[0])
-        self.textBrowser_2.setText(to_string(decrypted))
 
         lines = open(directory, 'wb')
-        lines.write(bytearray(self.textBrowser_2.toPlainText()))
+        lines.write(bytearray(decrypted))
         lines.close()
 
         self.label_8.setText("Please check your files!")
 
+        # Status
         size = 'Size of file is ' + get_size() + ' bytes'
         self.label_6.setText(size)
 
